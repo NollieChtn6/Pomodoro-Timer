@@ -4,13 +4,14 @@ import { FastForward } from "lucide-react";
 type OptionsButtonProps = {
   action: "openSettings" | "skipStep";
   state: "isFocus" | "isShortBreak" | "isLongBreak" | "isPaused";
+  onClick: () => void;
 };
 
-export function OptionsButton({ action, state }: OptionsButtonProps) {
+export function OptionsButton({ action, state, onClick }: OptionsButtonProps) {
   const icon =
     action === "openSettings" ? <Ellipsis className="icon" /> : <FastForward className="icon" />;
   return (
-    <button className={`btn options-btn ${state}`} type="button">
+    <button className={`btn options-btn ${state}`} type="button" onClick={onClick}>
       {icon}
     </button>
   );
