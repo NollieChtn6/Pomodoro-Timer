@@ -72,7 +72,7 @@ main {
     color: var(--green-900);
   }
   &.isFocus {
-    background-color: var(--red-50s);
+    background-color: var(--red-50);
     color: var(--red-900);
   }
 }
@@ -197,7 +197,7 @@ main {
     color: var(--gray-900);
   }
   &.isFocus {
-    background-color: var(--redAlpha700);
+    background-color: var(--redAlpha-700);
     color: var(--red-900);
   }
   &.isShortBreak {
