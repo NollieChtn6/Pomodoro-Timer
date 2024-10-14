@@ -3,7 +3,7 @@ import { FastForward } from "lucide-react";
 
 type OptionsButtonProps = {
   action: "openSettings" | "skipStep";
-  state: "isFocus" | "isShortBreak" | "isLongBreak";
+  state: "isFocus" | "isShortBreak" | "isLongBreak" | "isPaused";
 };
 
 export function OptionsButton({ action, state }: OptionsButtonProps) {

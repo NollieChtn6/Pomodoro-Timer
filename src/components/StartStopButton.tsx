@@ -1,7 +1,7 @@
 import { Play, Pause } from "lucide-react";
 
 type StartStopButtonProps = {
-  state: "isFocus" | "isShortBreak" | "isLongBreak";
+  state: "isFocus" | "isShortBreak" | "isLongBreak" | "isPaused";
   timerIsRunning: boolean;
 };
 
