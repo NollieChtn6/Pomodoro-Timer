@@ -10,6 +10,11 @@
   --app-background-color: #e5e4e2;
   --shadow-color: #71797e;
 
+  --grayAlpha-100: #e5e5e5;
+  --grayAlpha-700: rgba(169, 169, 169, 0.71);
+  --gray-900: rgba(50, 50, 50, 1);
+  --gray-50: rgba(240, 240, 240, 0.9);
+
   --redAlpha-100: rgba(255, 76, 76, 0.15);
   --redAlpha-700: rgba(255, 76, 76, 0.71);
   --red-900: rgba(71, 21, 21, 1);
@@ -52,6 +57,12 @@ main {
   box-shadow: 10px 10px 24px -2px var(--shadow-color);
   -webkit-box-shadow: 10px 10px 24px -2px var(--shadow-color);
   -moz-box-shadow: 10px 10px 24px -2px var(--shadow-color);
+
+  &.isPaused {
+    background-color: var(--gray-50);
+    color: var(--gray-900);
+  }
+
   &.isLongBreak {
     background-color: var(--blue-50);
     color: var(--blue-900);
@@ -75,10 +86,15 @@ main {
   justify-content: space-evenly;
   border-radius: 25px;
   font-size: 2rem;
+  &.isPaused {
+    background-color: var(--grayAlpha-100);
+    color: var(--gray-900);
+    border: solid 1px var(--gray-900);
+  }
   &.isLongBreak {
     background-color: var(--blueAlpha-100);
     color: var(--blue-900);
-    border: var(--blue-900);
+    border: solid 1px var(--blue-900);
   }
   &.isShortBreak {
     background-color: var(--greenAlpha-100);
@@ -125,6 +141,10 @@ main {
     transform: scale(1.1);
     transition: 0.3s;
   }
+  &.isPaused {
+    background-color: var(--grayAlpha-100);
+    color: var(--gray-900);
+  }
 
   &.isFocus {
     background-color: var(--redAlpha-100);
@@ -139,6 +159,10 @@ main {
   &.isLongBreak {
     background-color: var(--blueAlpha-600);
     color: var(--blue-900);
+  }
+
+  &.isPaused .icon {
+    color: var(--gray-900);
   }
 
   &.isShortBreak .icon {
@@ -167,6 +191,10 @@ main {
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s ease;
+  &.isPaused {
+    background-color: var(--grayAlpha-700);
+    color: var(--gray-900);
+  }
   &.isFocus {
     background-color: var(--redAlpha700);
     color: var(--red-900);
