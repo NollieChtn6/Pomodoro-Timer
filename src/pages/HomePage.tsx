@@ -9,7 +9,7 @@ import { SettingsModal } from "../components/ModalSettings";
 export function HomePage() {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const currentState = "isPaused";
-  const timerIsRunning = false;
+  const timerIsRunning = true;
 
   const handleOpenModal = () => {
     setIsModalVisible(true);
@@ -26,7 +26,29 @@ export function HomePage() {
         <Timer />
         <div className="btns-container">
           <OptionsButton action="openSettings" state={currentState} onClick={handleOpenModal} />
-          <StartStopButton state={currentState} timerIsRunning={timerIsRunning} />
+          <div className="state-management-btns-container">
+            <div className="main-btn">
+              <StartStopButton state={currentState} timerIsRunning={timerIsRunning} />
+            </div>
+            {currentState === "isPaused" && (
+              <div className="secondary-btns">
+                <OptionsButton
+                  action="reset"
+                  onClick={() => {
+                    return null;
+                  }}
+                  state={currentState}
+                />
+                <OptionsButton
+                  action="stop"
+                  onClick={() => {
+                    return null;
+                  }}
+                  state={currentState}
+                />
+              </div>
+            )}
+          </div>
           <OptionsButton
             action="skipStep"
             state={currentState}
