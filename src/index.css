@@ -217,7 +217,7 @@ main {
 .step-container {
   display: flex;
   width: 50%;
-  margin: auto;
+  margin: 40px auto;
   justify-content: center;
   .step {
     font-size: 1.2rem;
@@ -313,4 +313,19 @@ main {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.state-management-btns-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  .main-btn {
+    display: flex;
+    flex-grow: 1;
+  }
+  .secondary-btns {
+    display: flex;
+    gap: 20px;
+  }
 }
