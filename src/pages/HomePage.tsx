@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { Chip } from "../components/Chip";
 import { OptionsButton } from "../components/OptionsButton";
@@ -6,15 +6,35 @@ import { StartStopButton } from "../components/StartStopButton";
 import { Timer } from "../components/Timer";
 import { SettingsModal } from "../components/ModalSettings";
 
-type TimerIsRunning = boolean;
-type ActivePhase = "isFocus" | "isLongBreak" | "isShortBreak" | "isPaused";
+import type { TimerIsRunning, ActivePhase, Cycle, Pomodoro } from "../@types/types";
 
 export function HomePage() {
+  const [pomodoroState, _setPomodoroState] = useState<Pomodoro>({
+    workDuration: 25 * 60,
+    shortBreakDuration: 5 * 60,
+    longBreakDuration: 20 * 60,
+    numberOfCycles: 4,
+  });
+
+  const generatePomodoroCycles = (nbOfCycles: number): Cycle[] => {
+    const cycles: Cycle[] = [];
+    for (let nb = 0; nb < nbOfCycles - 1; nb++) {
+      cycles.push({ focus: "isFocus", break: "isShortBreak" });
+    }
+    cycles.push({ focus: "isFocus", break: "isLongBreak" });
+    return cycles;
+  };
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const [activePhase, setActivePhase] = useState<ActivePhase>("isPaused");
   const [timerIsRunning, setTimerIsRunning] = useState<TimerIsRunning>(false);
+  const [remainingTime, setRemainingTime] = useState<number>(pomodoroState.workDuration);
+
   const [optionIsDisabled, setOptionIsDisabled] = useState<boolean>(true);
+
+  const pomodoroCycles = generatePomodoroCycles(pomodoroState.numberOfCycles);
+  const [currentCycleIndex, setCurrentCycleIndex] = useState(0);
+  const [currentPhase, setCurrentPhase] = useState<"focus" | "break">("focus");
 
   const handleOpenModal = () => {
     setIsModalVisible(true);
@@ -24,39 +44,71 @@ export function HomePage() {
     setIsModalVisible(false);
   };
 
-  const handleSkipPhase = () => {
-    setActivePhase("isShortBreak"); // phase du cycle +1
-  };
+  const handleSkipPhase = useCallback(() => {
+    if (currentPhase === "focus") {
+      setCurrentPhase("break");
+      setActivePhase(pomodoroCycles[currentCycleIndex].break);
+      setRemainingTime(
+        pomodoroCycles[currentCycleIndex].break === "isShortBreak"
+          ? pomodoroState.shortBreakDuration
+          : pomodoroState.longBreakDuration,
+      );
+    } else {
+      const nextCycleIndex = (currentCycleIndex + 1) % pomodoroCycles.length;
+      setCurrentCycleIndex(nextCycleIndex);
+      setCurrentPhase("focus");
+      setActivePhase(pomodoroCycles[nextCycleIndex].focus);
+      setRemainingTime(pomodoroState.workDuration);
+    }
+  }, [
+    currentPhase,
+    currentCycleIndex,
+    pomodoroCycles,
+    pomodoroState.longBreakDuration,
+    pomodoroState.shortBreakDuration,
+    pomodoroState.workDuration,
+  ]);
 
   const handleStartPauseTimer = () => {
-    if (!timerIsRunning) {
-      setActivePhase("isFocus");
-      setTimerIsRunning(true);
-      setOptionIsDisabled(false);
-    } else {
-      if (timerIsRunning) {
-        setActivePhase("isPaused");
-        setTimerIsRunning(false);
-        setOptionIsDisabled(false);
-      }
-    }
+    setTimerIsRunning((prev) => !prev);
+    setActivePhase(timerIsRunning ? "isPaused" : pomodoroCycles[currentCycleIndex].focus);
+    setOptionIsDisabled(timerIsRunning);
   };
 
   const handleStopTimer = () => {
-    // reset timer to user settings
-    // reset workingCycle to 0
+    setTimerIsRunning(false);
+    setRemainingTime(pomodoroState.workDuration);
+    setActivePhase("isPaused");
+    setCurrentCycleIndex(0);
   };
 
   const handleResetTimer = () => {
-    // reset timer to default settings: 25/5
+    setTimerIsRunning(false);
+    setCurrentCycleIndex(0);
+    setCurrentPhase("focus");
     setActivePhase("isPaused");
   };
+
+  useEffect(() => {
+    if (!timerIsRunning) return;
+    if (remainingTime === 0) {
+      handleSkipPhase();
+      return;
+    }
+    const timeout = setTimeout(() => {
+      setRemainingTime(remainingTime - 1);
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, [timerIsRunning, remainingTime, handleSkipPhase]);
+
+  const minutes = Math.floor(remainingTime / 60);
+  const seconds = remainingTime % 60;
 
   return (
     <>
       <div className={`pomodoro-container ${activePhase}`}>
         <Chip state={activePhase} />
-        <Timer />
+        <Timer minutes={minutes} seconds={seconds} />
         <div className="btns-container">
           <OptionsButton
             action="openSettings"
