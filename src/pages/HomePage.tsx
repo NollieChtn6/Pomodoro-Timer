@@ -6,10 +6,15 @@ import { StartStopButton } from "../components/StartStopButton";
 import { Timer } from "../components/Timer";
 import { SettingsModal } from "../components/ModalSettings";
 
+type TimerIsRunning = boolean;
+type ActivePhase = "isFocus" | "isLongBreak" | "isShortBreak" | "isPaused";
+
 export function HomePage() {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const currentState = "isPaused";
-  const timerIsRunning = true;
+
+  const [activePhase, setActivePhase] = useState<ActivePhase>("isPaused");
+  const [timerIsRunning, setTimerIsRunning] = useState<TimerIsRunning>(false);
+  const [optionIsDisabled, setOptionIsDisabled] = useState<boolean>(true);
 
   const handleOpenModal = () => {
     setIsModalVisible(true);
@@ -19,42 +24,76 @@ export function HomePage() {
     setIsModalVisible(false);
   };
 
+  const handleSkipPhase = () => {
+    setActivePhase("isShortBreak"); // phase du cycle +1
+  };
+
+  const handleStartPauseTimer = () => {
+    if (!timerIsRunning) {
+      setActivePhase("isFocus");
+      setTimerIsRunning(true);
+      setOptionIsDisabled(false);
+    } else {
+      if (timerIsRunning) {
+        setActivePhase("isPaused");
+        setTimerIsRunning(false);
+        setOptionIsDisabled(false);
+      }
+    }
+  };
+
+  const handleStopTimer = () => {
+    // reset timer to user settings
+    // reset workingCycle to 0
+  };
+
+  const handleResetTimer = () => {
+    // reset timer to default settings: 25/5
+    setActivePhase("isPaused");
+  };
+
   return (
     <>
-      <div className={`pomodoro-container ${currentState}`}>
-        <Chip state={currentState} />
+      <div className={`pomodoro-container ${activePhase}`}>
+        <Chip state={activePhase} />
         <Timer />
         <div className="btns-container">
-          <OptionsButton action="openSettings" state={currentState} onClick={handleOpenModal} />
+          <OptionsButton
+            action="openSettings"
+            state={activePhase}
+            onClick={handleOpenModal}
+            disabled={false}
+          />
           <div className="state-management-btns-container">
             <div className="main-btn">
-              <StartStopButton state={currentState} timerIsRunning={timerIsRunning} />
+              <StartStopButton
+                state={activePhase}
+                timerIsRunning={timerIsRunning}
+                onClick={handleStartPauseTimer}
+              />
             </div>
-            {currentState === "isPaused" && (
+            {activePhase === "isPaused" && (
               <div className="secondary-btns">
                 <OptionsButton
                   action="reset"
-                  onClick={() => {
-                    return null;
-                  }}
-                  state={currentState}
+                  onClick={handleResetTimer}
+                  state={activePhase}
+                  disabled={false}
                 />
                 <OptionsButton
                   action="stop"
-                  onClick={() => {
-                    return null;
-                  }}
-                  state={currentState}
+                  onClick={handleStopTimer}
+                  state={activePhase}
+                  disabled={false}
                 />
               </div>
             )}
           </div>
           <OptionsButton
             action="skipStep"
-            state={currentState}
-            onClick={() => {
-              return null;
-            }}
+            state={activePhase}
+            onClick={handleSkipPhase}
+            disabled={optionIsDisabled}
           />
         </div>
         <div className="step-container">
