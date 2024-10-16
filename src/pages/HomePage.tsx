@@ -149,7 +149,14 @@ export function HomePage() {
           />
         </div>
         <div className="step-container">
-          <p className="step">Next step is: Long Break (25min)</p>
+          <p className="step">
+            Next step is:{" "}
+            {currentPhase === "focus"
+              ? pomodoroCycles[currentCycleIndex].break === "isShortBreak"
+                ? "Short Break"
+                : "Long Break"
+              : "Focus"}
+          </p>
         </div>
       </div>
       <SettingsModal isVisible={isModalVisible} onClose={handleCloseModal} />
