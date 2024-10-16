@@ -4,9 +4,10 @@ type OptionsButtonProps = {
   action: "openSettings" | "skipStep" | "reset" | "stop";
   state: "isFocus" | "isShortBreak" | "isLongBreak" | "isPaused";
   onClick: () => void;
+  disabled: boolean;
 };
 
-export function OptionsButton({ action, state, onClick }: OptionsButtonProps) {
+export function OptionsButton({ action, state, onClick, disabled }: OptionsButtonProps) {
   const icon = (() => {
     switch (action) {
       case "openSettings":
@@ -23,7 +24,12 @@ export function OptionsButton({ action, state, onClick }: OptionsButtonProps) {
   })();
 
   return (
-    <button className={`btn options-btn ${state}`} type="button" onClick={onClick}>
+    <button
+      className={`btn options-btn ${state}`}
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+    >
       {icon}
     </button>
   );
