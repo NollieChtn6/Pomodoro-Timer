@@ -9,12 +9,15 @@ import { SettingsModal } from "../components/ModalSettings";
 import type { TimerIsRunning, ActivePhase, Cycle, Pomodoro } from "../@types/types";
 
 export function HomePage() {
-  const [pomodoroState, _setPomodoroState] = useState<Pomodoro>({
+  const defaultPomodoroState: Pomodoro = {
     workDuration: 25 * 60,
     shortBreakDuration: 5 * 60,
     longBreakDuration: 20 * 60,
     numberOfCycles: 4,
-  });
+  };
+
+  const [pomodoroState, setPomodoroState] = useState<Pomodoro>(defaultPomodoroState);
+  const [userSettings, setUserSettings] = useState<Pomodoro>(defaultPomodoroState);
 
   const generatePomodoroCycles = (nbOfCycles: number): Cycle[] => {
     const cycles: Cycle[] = [];
@@ -77,16 +80,26 @@ export function HomePage() {
 
   const handleStopTimer = () => {
     setTimerIsRunning(false);
-    setRemainingTime(pomodoroState.workDuration);
-    setActivePhase("isPaused");
     setCurrentCycleIndex(0);
+    setCurrentPhase("focus");
+    setActivePhase("isPaused");
+    setRemainingTime(userSettings.workDuration);
   };
 
   const handleResetTimer = () => {
     setTimerIsRunning(false);
+    setPomodoroState(defaultPomodoroState);
     setCurrentCycleIndex(0);
     setCurrentPhase("focus");
     setActivePhase("isPaused");
+    setRemainingTime(defaultPomodoroState.workDuration);
+  };
+
+  const handleSaveSettings = (updatedSettings: Pomodoro) => {
+    setUserSettings(updatedSettings);
+    setPomodoroState(updatedSettings);
+    setRemainingTime(updatedSettings.workDuration);
+    handleCloseModal();
   };
 
   useEffect(() => {
@@ -159,7 +172,12 @@ export function HomePage() {
           </p>
         </div>
       </div>
-      <SettingsModal isVisible={isModalVisible} onClose={handleCloseModal} />
+      <SettingsModal
+        isVisible={isModalVisible}
+        onClose={handleCloseModal}
+        onSave={handleSaveSettings}
+        defaultSettings={userSettings}
+      />
     </>
   );
 }
