@@ -10,3 +10,8 @@ export type Pomodoro = {
   longBreakDuration: number;
   numberOfCycles: number;
 };
+
+export type ToolTip = {
+  id: string;
+  content: string;
+};
