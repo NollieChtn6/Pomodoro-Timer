@@ -1,17 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { SettingsButton } from "./SettingsButton";
+import type { Pomodoro } from "../@types/types";
 
 type SettingsModalProps = {
   isVisible: boolean;
   onClose: () => void;
+  onSave: (updatedSettings: Pomodoro) => void;
+  defaultSettings: Pomodoro;
 };
 
-export function SettingsModal({ isVisible, onClose }: SettingsModalProps) {
-  const [workDuration, setWorkDuration] = useState<number>(25);
-  const [breakDuration, setBreakDuration] = useState<number>(5);
+export function SettingsModal({ isVisible, onClose, onSave, defaultSettings }: SettingsModalProps) {
+  const [workDuration, setWorkDuration] = useState<number>(defaultSettings.workDuration / 60);
+  const [shortBreakDuration, setShortBreakDuration] = useState<number>(
+    defaultSettings.shortBreakDuration / 60,
+  );
+  const [longBreakDuration, setLongBreakDuration] = useState<number>(
+    defaultSettings.longBreakDuration / 60,
+  );
+
+  useEffect(() => {
+    setWorkDuration(defaultSettings.workDuration / 60);
+    setShortBreakDuration(defaultSettings.shortBreakDuration / 60);
+    setLongBreakDuration(defaultSettings.longBreakDuration / 60);
+  }, [defaultSettings]);
+
+  useEffect(() => {
+    setLongBreakDuration(shortBreakDuration * 4);
+  }, [shortBreakDuration]);
 
   if (!isVisible) return null;
+
+  const handleSave = () => {
+    onSave({
+      workDuration: workDuration * 60,
+      shortBreakDuration: shortBreakDuration * 60,
+      longBreakDuration: longBreakDuration * 60,
+      numberOfCycles: 4,
+    });
+  };
 
   return (
     <div className="modal-overlay">
@@ -38,23 +65,23 @@ export function SettingsModal({ isVisible, onClose }: SettingsModalProps) {
             </div>
           </div>
           <div className="setting">
-            <h3>Break Duration</h3>
+            <h3>Short Break Duration</h3>
             <div className="controls-container">
               <SettingsButton
                 action="decrement"
-                onClick={() => setBreakDuration(breakDuration - 1)}
-                disabled={breakDuration <= 1}
+                onClick={() => setShortBreakDuration(shortBreakDuration - 1)}
+                disabled={shortBreakDuration <= 1}
               />
-              <p className="duration">{breakDuration} min</p>
+              <p className="duration">{shortBreakDuration} min</p>
               <SettingsButton
                 action="increment"
-                onClick={() => setBreakDuration(breakDuration + 1)}
+                onClick={() => setShortBreakDuration(shortBreakDuration + 1)}
                 disabled={false}
               />
             </div>
           </div>
         </div>
-        <button className="btn save-btn" onClick={onClose} type="button">
+        <button className="btn save-btn" onClick={handleSave} type="button">
           Save
         </button>
       </div>
