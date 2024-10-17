@@ -1,4 +1,7 @@
 import { TimerReset, StopCircle, Ellipsis, FastForward } from "lucide-react";
+import { Tooltip } from "react-tooltip";
+
+import type { ToolTip } from "../@types/types";
 
 type OptionsButtonProps = {
   action: "openSettings" | "skipStep" | "reset" | "stop";
@@ -8,29 +11,51 @@ type OptionsButtonProps = {
 };
 
 export function OptionsButton({ action, state, onClick, disabled }: OptionsButtonProps) {
-  const icon = (() => {
+  const { icon, toolTip }: { icon: JSX.Element | null; toolTip: ToolTip } = (() => {
     switch (action) {
       case "openSettings":
-        return <Ellipsis className="icon" />;
+        return {
+          icon: <Ellipsis className="icon" />,
+          toolTip: { id: "tooltip-settings", content: "Open settings" },
+        };
       case "skipStep":
-        return <FastForward className="icon" />;
+        return {
+          icon: <FastForward className="icon" />,
+          toolTip: { id: "tooltip-skip", content: "Skip current phase" },
+        };
       case "reset":
-        return <TimerReset className="icon" />;
+        return {
+          icon: <TimerReset className="icon" />,
+          toolTip: { id: "tooltip-reset", content: "Reset timer" },
+        };
       case "stop":
-        return <StopCircle className="icon" />;
+        return {
+          icon: <StopCircle className="icon" />,
+          toolTip: { id: "tooltip-stop", content: "Stop timer" },
+        };
       default:
-        return null;
+        return {
+          icon: null,
+          toolTip: { id: "", content: "", place: "" },
+        };
     }
   })();
 
   return (
-    <button
-      className={`btn options-btn ${state}`}
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {icon}
-    </button>
+    <>
+      <button
+        className={`btn options-btn ${state}`}
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        data-tooltip-id={toolTip.id}
+        data-tooltip-content={toolTip.content}
+        data-tooltip-place={"bottom"}
+        data-tooltip-delay-show={800}
+      >
+        {icon}
+      </button>
+      <Tooltip id={toolTip.id} />
+    </>
   );
 }
