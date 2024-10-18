@@ -74,8 +74,13 @@ export function HomePage() {
 
   const handleStartPauseTimer = () => {
     setTimerIsRunning((prev) => !prev);
-    setActivePhase(timerIsRunning ? "isPaused" : pomodoroCycles[currentCycleIndex].focus);
-    setOptionIsDisabled(timerIsRunning);
+    if (timerIsRunning) {
+      setActivePhase("isPaused");
+      setOptionIsDisabled(true);
+    } else {
+      setActivePhase(pomodoroCycles[currentCycleIndex].focus);
+      setOptionIsDisabled(false);
+    }
   };
 
   const handleStopTimer = () => {
@@ -84,6 +89,7 @@ export function HomePage() {
     setCurrentPhase("focus");
     setActivePhase("isPaused");
     setRemainingTime(userSettings.workDuration);
+    setOptionIsDisabled(true);
   };
 
   const handleResetTimer = () => {
@@ -94,6 +100,7 @@ export function HomePage() {
     setCurrentPhase("focus");
     setActivePhase("isPaused");
     setRemainingTime(defaultPomodoroState.workDuration);
+    setOptionIsDisabled(true);
   };
 
   const handleSaveSettings = (updatedSettings: Pomodoro) => {
