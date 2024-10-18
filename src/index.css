@@ -128,6 +128,17 @@ main {
   margin: auto;
 }
 
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  background-color: #aaa;
+  transform: none;
+}
+
+.btn:disabled:hover {
+  transform: none;
+}
+
 .options-btn {
   width: 60px;
   height: 50px;
