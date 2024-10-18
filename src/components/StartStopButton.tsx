@@ -19,6 +19,8 @@ export function StartStopButton({ state, timerIsRunning, onClick }: StartStopBut
         toolTip: { id: "tooltip-play", content: "Start timer" },
       };
 
+  const toolTipSyle = { backgroundColor: "#71797E", color: "#ffffff" };
+
   return (
     <>
       <button
@@ -32,7 +34,7 @@ export function StartStopButton({ state, timerIsRunning, onClick }: StartStopBut
       >
         {icon}
       </button>
-      <Tooltip id={toolTip.id} className="toolTip" />
+      <Tooltip id={toolTip.id} style={toolTipSyle} />
     </>
   );
 }
