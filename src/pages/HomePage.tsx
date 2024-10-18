@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import useSound from "use-sound";
 
 import { Chip } from "../components/Chip";
 import { OptionsButton } from "../components/OptionsButton";
@@ -8,7 +9,10 @@ import { SettingsModal } from "../components/ModalSettings";
 
 import type { TimerIsRunning, ActivePhase, Cycle, Pomodoro } from "../@types/types";
 
+import sound from "./../assets/sounds/bell-chime.wav";
+
 export function HomePage() {
+  const [playSound] = useSound(sound);
   const defaultPomodoroState: Pomodoro = {
     workDuration: 25 * 60,
     shortBreakDuration: 5 * 60,
@@ -114,13 +118,14 @@ export function HomePage() {
     if (!timerIsRunning) return;
     if (remainingTime === 0) {
       handleSkipPhase();
+      playSound();
       return;
     }
     const timeout = setTimeout(() => {
       setRemainingTime(remainingTime - 1);
     }, 1000);
     return () => clearTimeout(timeout);
-  }, [timerIsRunning, remainingTime, handleSkipPhase]);
+  }, [timerIsRunning, remainingTime, handleSkipPhase, playSound]);
 
   const minutes = Math.floor(remainingTime / 60);
   const seconds = remainingTime % 60;
