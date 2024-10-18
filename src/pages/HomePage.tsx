@@ -6,13 +6,15 @@ import { OptionsButton } from "../components/OptionsButton";
 import { StartStopButton } from "../components/StartStopButton";
 import { Timer } from "../components/Timer";
 import { SettingsModal } from "../components/ModalSettings";
+import { AudioButton } from "../components/AudioButton";
 
 import type { TimerIsRunning, ActivePhase, Cycle, Pomodoro } from "../@types/types";
 
 import sound from "./../assets/sounds/bell-chime.wav";
 
 export function HomePage() {
-  const [playSound] = useSound(sound);
+  const [soundIsActive, setSoundIsActive] = useState<boolean>(true);
+  const [playSound] = useSound(sound, { soundEnabled: soundIsActive });
   const defaultPomodoroState: Pomodoro = {
     workDuration: 25 * 60,
     shortBreakDuration: 5 * 60,
@@ -114,6 +116,10 @@ export function HomePage() {
     handleCloseModal();
   };
 
+  const handleToggleAudio = () => {
+    setSoundIsActive(!soundIsActive);
+  };
+
   useEffect(() => {
     if (!timerIsRunning) return;
     if (remainingTime === 0) {
@@ -191,6 +197,7 @@ export function HomePage() {
         onSave={handleSaveSettings}
         defaultSettings={userSettings}
       />
+      <AudioButton soundIsActive={soundIsActive} onClick={handleToggleAudio} />
     </>
   );
 }
