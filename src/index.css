@@ -86,7 +86,6 @@ main {
   justify-content: space-evenly;
   border-radius: 25px;
   font-size: 2rem;
-  margin-bottom: 2rem;
   &.isPaused {
     background-color: var(--grayAlpha-100);
     color: var(--gray-900);
@@ -338,5 +337,20 @@ main {
   .secondary-btns {
     display: flex;
     gap: 20px;
+  }
+}
+
+.audio-btn {
+  position: absolute;
+  float: left;
+  top: 2rem;
+  right: 2rem;
+  background-color: var(--grayAlpha-700);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.1);
+    transition: 0.5s;
   }
 }
