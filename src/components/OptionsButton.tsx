@@ -40,6 +40,7 @@ export function OptionsButton({ action, state, onClick, disabled }: OptionsButto
         };
     }
   })();
+  const toolTipSyle = { backgroundColor: "#71797E", color: "#ffffff" };
 
   return (
     <>
@@ -55,7 +56,7 @@ export function OptionsButton({ action, state, onClick, disabled }: OptionsButto
       >
         {icon}
       </button>
-      <Tooltip id={toolTip.id} />
+      <Tooltip id={toolTip.id} style={toolTipSyle} />
     </>
   );
 }
